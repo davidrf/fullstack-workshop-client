@@ -14,14 +14,6 @@ TODO: Apollo Link State:
 */
 
 import React, { Component } from 'react';
-import { Mutation } from 'react-apollo';
-import gql from 'graphql-tag';
-
-const LOGIN_USER = gql`
-  mutation loginUser($email: String!) {
-    login(email: $email)
-  }
-`;
 
 const Form = ({ isLoggedIn, login, logout }) => {
   let input = React.createRef();
@@ -64,21 +56,11 @@ export default class Login extends Component {
   };
 
   render = () => (
-    <Mutation
-      mutation={LOGIN_USER}
-      onCompleted={({ login }) => {
-        localStorage.setItem('token', login);
-        this.setState({ isLoggedIn: true });
-      }}
-    >
-      {login => (
-        <Form
-          login={login}
-          logout={this.logout}
-          isLoggedIn={this.state.isLoggedIn}
-        />
-      )}
-    </Mutation>
+    <Form
+      login={() => {}}
+      logout={this.logout}
+      isLoggedIn={this.state.isLoggedIn}
+    />
   );
 }
 
