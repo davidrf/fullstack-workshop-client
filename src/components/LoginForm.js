@@ -14,14 +14,8 @@ TODO: Apollo Link State:
 */
 
 import React, { Component } from 'react';
-import { Query, Mutation } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
-
-const IS_LOGGED_IN = gql`
-  {
-    isLoggedIn @client
-  }
-`;
 
 const LOGIN_USER = gql`
   mutation loginUser($email: String!) {
@@ -55,31 +49,36 @@ const Form = ({ isLoggedIn, login, logout }) => {
 };
 
 export default class Login extends Component {
-  logout = client => {
-    client.writeData({ data: { isLoggedIn: false } });
-    localStorage.clear();
+  constructor(props) {
+    super(props);
+
+    const token = localStorage.getItem('token');
+
+    this.state = {
+      isLoggedIn: !!token,
+    };
+  }
+
+  logout = () => {
+    this.setState({ isLoggedIn: false }, () => localStorage.clear());
   };
 
   render = () => (
-    <Query query={IS_LOGGED_IN}>
-      {({ data: { isLoggedIn }, client }) => (
-        <Mutation
-          mutation={LOGIN_USER}
-          onCompleted={({ login }) => {
-            localStorage.setItem('token', login);
-            client.writeData({ data: { isLoggedIn: true } });
-          }}
-        >
-          {login => (
-            <Form
-              login={login}
-              logout={() => this.logout(client)}
-              isLoggedIn={isLoggedIn}
-            />
-          )}
-        </Mutation>
+    <Mutation
+      mutation={LOGIN_USER}
+      onCompleted={({ login }) => {
+        localStorage.setItem('token', login);
+        this.setState({ isLoggedIn: true });
+      }}
+    >
+      {login => (
+        <Form
+          login={login}
+          logout={this.logout}
+          isLoggedIn={this.state.isLoggedIn}
+        />
       )}
-    </Query>
+    </Mutation>
   );
 }
 
