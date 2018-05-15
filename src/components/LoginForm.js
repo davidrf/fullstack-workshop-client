@@ -1,8 +1,9 @@
 /*
 TODO: Creating a mutation component (part 1):
 
-1. Create a Mutation component to login the user
-2. Use the onCompleted prop on Mutation to set whether the user is logged in
+1. Create a Mutation component to login the user.
+2. You should wrap the Form component in a mutation component and pass the login function down as a prop.
+3. Use the onCompleted prop on Mutation to set the user's token in localStorage
 */
 
 /*
@@ -28,11 +29,36 @@ const LOGIN_USER = gql`
   }
 `;
 
+const Form = ({ isLoggedIn, login, logout }) => {
+  let input = React.createRef();
+
+  return (
+    <div style={styles.container}>
+      {isLoggedIn ? (
+        <button onClick={logout}>Log Out</button>
+      ) : (
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            const email = input.current.value;
+            login({
+              variables: { email },
+            });
+          }}
+        >
+          <input type="text" ref={input} placeholder="Email" />
+          <button className="button">Log in</button>
+        </form>
+      )}
+    </div>
+  );
+};
+
 export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.input = React.createRef();
-  }
+  logout = client => {
+    client.writeData({ data: { isLoggedIn: false } });
+    localStorage.clear();
+  };
 
   render = () => (
     <Query query={IS_LOGGED_IN}>
@@ -45,31 +71,11 @@ export default class Login extends Component {
           }}
         >
           {login => (
-            <div style={styles.container}>
-              {isLoggedIn ? (
-                <button
-                  onClick={() => {
-                    client.writeData({ data: { isLoggedIn: false } });
-                    localStorage.clear();
-                  }}
-                >
-                  Log Out
-                </button>
-              ) : (
-                <form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    const email = this.input.current.value;
-                    login({
-                      variables: { email },
-                    });
-                  }}
-                >
-                  <input type="text" ref={this.input} placeholder="Email" />
-                  <button className="button">Log in</button>
-                </form>
-              )}
-            </div>
+            <Form
+              login={login}
+              logout={() => this.logout(client)}
+              isLoggedIn={isLoggedIn}
+            />
           )}
         </Mutation>
       )}
