@@ -92,29 +92,7 @@ export default class MovieList extends Component {
               {(data.movies || data.likes).map(movie => (
                 <MovieTile key={movie.id} movie={movie} />
               ))}
-              {data.movies && (
-                <button
-                  onClick={() => {
-                    const newPage = Math.floor(data.movies.length / 20) + 1;
-                    return fetchMore({
-                      variables: {
-                        page: newPage,
-                      },
-                      updateQuery: (previous, { fetchMoreResult }) => {
-                        if (!fetchMoreResult) return previous;
-                        return {
-                          movies: [
-                            ...previous.movies,
-                            ...fetchMoreResult.movies,
-                          ],
-                        };
-                      },
-                    });
-                  }}
-                >
-                  Load More
-                </button>
-              )}
+              {data.movies && <button onClick={() => {}}>Load More</button>}
             </div>
           );
         }}
