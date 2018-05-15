@@ -7,7 +7,7 @@ PART 1:
 Both should share the same fields through a fragment.
 3. You can pass different queries into the Query component depending on state and props.
 Check out this.state.sort and the Filter component to choose your query based on what
-sorting option is selected.
+sorting option is selected. You can also pass in different variables to your queries depending on props and state.
 4. Handle loading and error state
 
 PART 2:

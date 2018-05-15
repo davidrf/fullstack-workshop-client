@@ -2,7 +2,8 @@
 TODO: Mutation components
 
 PART 2:
-1. Hook up the toggleLike mutation to the Heart component
+1. Hook up the toggleLike mutation to the Heart component.
+You can wrap the whole MovieTile component in the Mutation component.
 2. Add an optimistic response so our UI feels snappy
 Once you have it working, do you notice anything strange about the UI?
 Navigate to the liked movies list and try liking/unliking some movies
